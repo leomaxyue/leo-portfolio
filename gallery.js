@@ -41,20 +41,6 @@ window.projectGalleries = {
       "description": "从录音列表查看对话与提取内容，同时展示设备同步、处理进度与需要重试的记录。"
     }
   ],
-  "aigc": [
-    {
-      "src": "assets/projects/aigc-display.webp",
-      "title": "把角色与场景，组织成产品画面",
-      "kind": "既有 AIGC 展示效果图",
-      "description": "以《马之宫廷》为例，让角色、卡框、光线与场景保持同一种视觉语言。"
-    },
-    {
-      "src": "assets/projects/aigc-material.webp",
-      "title": "从平面视觉，继续探索材质表现",
-      "kind": "工艺与材质概念效果图",
-      "description": "围绕纸张、暖金、压纹与局部光泽组织细节表达，用效果图讨论实体媒介的视觉方向。"
-    }
-  ],
   "cards": [
     {
       "src": "assets/projects/cards-packaging.webp",
@@ -97,6 +83,18 @@ window.projectGalleries = {
       "title": "Joker · 统御牌局",
       "kind": "角色卡面设计稿",
       "description": "以独立叙事画面呈现宫廷秩序的边界。"
+    },
+    {
+      "src": "assets/projects/aigc-display.webp",
+      "title": "把角色与场景，组织成产品画面",
+      "kind": "既有 AIGC 展示效果图",
+      "description": "以《马之宫廷》为例，让角色、卡框、光线与场景保持同一种视觉语言。"
+    },
+    {
+      "src": "assets/projects/aigc-material.webp",
+      "title": "从平面视觉，继续探索材质表现",
+      "kind": "工艺与材质概念效果图",
+      "description": "围绕纸张、暖金、压纹与局部光泽组织细节表达，用效果图讨论实体媒介的视觉方向。"
     }
   ]
 };

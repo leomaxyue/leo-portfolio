@@ -3,7 +3,6 @@ const projects = {
   ip: { title: 'IP 增长智能体', category: 'AI AGENT / BUSINESS', lead: '让趋势洞察接上内容创作与商品机会。', background: 'IP 运营不止需要持续产出内容，还需要判断什么值得做，以及如何把内容与商业机会连接起来。这个项目围绕 IP 公司、主理人与品牌团队的需求展开。', approach: ['梳理 IP 信息、用户与趋势，寻找值得进一步验证的机会。','将内容方向与商品创意放到同一条产品路径中。','通过演示与客户需求讨论，持续明确产品边界。'], outcome: '现有内容包括产品演示与商务沟通材料，围绕真实业务需求持续探索增长工作流。', focus: '需求分析 · 产品定义 · 增长工作流 · 商业化探索' },
   mirro: { title: 'Mirro', category: 'AI SOCIAL / DIGITAL LIFE', lead: '让另一个你，带来认识世界与连接他人的新方式。', background: '探索一个由 AI 数字分身组成的第二世界：分身能够积累经历与记忆，帮助真人发现可能感兴趣的人、活动与关系机会。', approach: ['围绕数字分身、人格与长期记忆设计产品体验。','让数字世界里的经历能够被看见、被理解。','将现实关系的选择权留给用户，明确 AI 行动边界。'], outcome: '现有内容包括概念方案、原型与项目沟通材料，聚焦数字分身、世界体验与关系发现。', focus: '产品构想 · 数字生命 · 社交体验 · 原型设计' },
   bean: { title: '录音豆智能助手', category: 'MEMORY / AI × HARDWARE', lead: '把一天的交流，接上人物、事情与下一步。', background: '会议、活动、朋友邀约与灵感分散在一天里。只有转写与摘要，还不足以帮助用户记住承诺、整理变化和准备下一次交流。', approach: ['以一天为入口，组织多次独立交流。','关联人物与事情，保存有来源的事实和约定。','从记录继续走向提醒、准备材料和写作等任务。'], outcome: '现有内容包括 Anker 黑客松智能录音赛题的产品需求文档与页面设计规范，覆盖一天的交流、人物记忆与行动组织。', focus: '场景设计 · AI 记忆 · 硬件协同 · 产品需求' },
-  aigc: { title: 'AIGC 创作', category: 'VISUAL / CREATIVE DIRECTION', lead: '用新的创作工具，把想象变成看得见的表达。', background: '把生成式工具放进视觉探索的过程，关注角色、场景、材质和叙事之间的关系，让创作围绕一个统一的主题展开。', approach: ['从视觉方向与主题出发，定义创作语言。','通过提示词与多轮调整探索构图、角色与材质。','将视觉素材组织成可交流、可继续制作的设计方案。'], outcome: '已形成视觉语言、创作提示词与设计展示材料。图集中选取已有项目的角色、场景和材质效果图，呈现生成式视觉的产品表达。', focus: '视觉方向 · 生成式创作 · 角色与场景 · 设计表达' },
   cards: { title: 'AIGC 卡牌', category: 'AIGC / CARD SERIES', lead: '让生成式视觉，进入可以握在手里的媒介。', background: '以卡牌与文创为载体，把角色、符号、故事和材料组织成一套连贯的产品表达。包含 The Court of Cards 与相关文创设计探索。', approach: ['建立卡面、图形与系列之间的视觉关系。','探索纸张、工艺与包装对作品体验的影响。','将主题叙事与设计说明整合为展示材料。'], outcome: '现有内容包括《马之宫廷》的卡面、角色等级、牌背、包装方案与工艺说明。包装和工艺图片为概念效果图，卡面为既有设计稿。', focus: '系列设计 · 卡牌叙事 · 视觉表达 · 实体媒介' }
 };
 const dialog = document.querySelector('#project-dialog');
@@ -11,8 +10,41 @@ const dialogContent = document.querySelector('#dialog-content');
 let previousFocus;
 let currentGallery = [];
 const imageDialog = document.querySelector('#image-dialog');
-function renderGallery(images) {
-  return `<section class="project-gallery" aria-label="项目图片展示"><div class="gallery-heading"><h3>产品与设计展示</h3><span>点击图片，查看大图 ↗</span></div><div class="gallery-grid">${images.map((image,index) => `<figure class="gallery-figure ${index===0?'gallery-featured':''}"><button class="gallery-image" data-gallery-index="${index}" aria-label="放大查看：${image.title}"><img src="${image.src}" alt="${image.title}，${image.kind}" loading="lazy" decoding="async"><span>查看大图 ↗</span></button><figcaption><p class="gallery-kind">${image.kind}</p><h4>${image.title}</h4><p>${image.description}</p></figcaption></figure>`).join('')}</div></section>`;
+const projectHighlights = {
+  ip: [['从 IP 出发','结合 IP 定位与用户需求，寻找适合自己的机会。'],['分步形成方案','从模型、搜索、洞察到匹配与增长方案，清楚呈现产品路径。'],['内容接上商品','把内容方向与商品创意放在同一条增长思路里。']],
+  mirro: [['有生活感的世界','用场景与事件承载数字分身的经历。'],['有记忆的分身','围绕人格、经历与长期记忆设计持续的数字身份。'],['连接回到真人','通过社群与关系机会帮助发现同好，选择权留给用户。']],
+  bean: [['以一天为入口','把工作、生活、社交与灵感组织成连续的一天。'],['关联人物与事情','跨多次交流接上同一件事，并保留原始信息来源。'],['从理解走向行动','根据已有背景，进一步准备材料、提醒与下一步任务。']],
+  cards: [['统一的世界观','以马为角色原型，建立四花色的宫廷叙事。'],['角色有分工','J 的行动、Q 的推演、K 的判断形成清楚的等级关系。'],['从卡面到包装','将色彩、丝带与马首徽记延续到牌背、牌盒及材质表现。']]
+};
+function renderHighlights(id) {
+  return `<section class="dialog-block"><h3>项目亮点</h3><div class="highlight-grid">${projectHighlights[id].map(([title,text],index) => `<article><span>0${index+1}</span><h4>${title}</h4><p>${text}</p></article>`).join('')}</div></section>`;
+}
+function renderFigure(images,index,featured=false) {
+  const image = images[index];
+  return `<figure class="gallery-figure ${featured?'gallery-featured':''}"><button class="gallery-image" data-gallery-index="${index}" aria-label="放大查看：${image.title}"><img src="${image.src}" alt="${image.title}，${image.kind}" loading="lazy" decoding="async"><span>查看大图 ↗</span></button><figcaption><p class="gallery-kind">${image.kind}</p><h4>${image.title}</h4><p>${image.description}</p></figcaption></figure>`;
+}
+function galleryGroup(images,title,description,indices,className='') {
+  return `<section class="showcase-group ${className}"><div class="gallery-heading"><h3>${title}</h3><span>点击图片，查看大图 ↗</span></div><p class="showcase-description">${description}</p><div class="gallery-grid">${indices.map(index=>renderFigure(images,index,indices.length===1)).join('')}</div></section>`;
+}
+function renderGallery(images,id) {
+  let content;
+  if (id === 'ip') {
+    content = `<div class="case-steps"><span>01 · IP 模型</span><span>02 · 搜索配置</span><span>03 · 情绪洞察</span><span>04 · 机会匹配</span><span>05 · 增长方案</span></div>` +
+      galleryGroup(images,'从洞察，到增长方案','以现有 Demo 展示工作流，再回到 IP 定位与增长方向。',[0],'workflow-showcase') +
+      galleryGroup(images,'围绕 IP 定位展开','先理解 IP，再讨论什么机会值得继续验证。',[1]);
+  } else if (id === 'mirro') {
+    content = galleryGroup(images,'一个世界，两种连接','进入世界感受分身的生活，再通过社群发现人与活动。',[0,1],'world-showcase');
+  } else if (id === 'bean') {
+    content = `<div class="case-steps bean-steps"><span>记录 · 接住一天</span><span>记忆 · 连接背景</span><span>助手 · 准备下一步</span></div>` +
+      galleryGroup(images,'今天、记忆、助手','三个主入口分别承接当天信息、跨日背景和下一步准备。',[0]) +
+      galleryGroup(images,'原始记录与设备状态','从来源和处理进度理解一次交流，保留回溯与更正的入口。',[1]);
+  } else {
+    content = galleryGroup(images,'马之宫廷：牌局之上的秩序','黑桃制定秩序，红桃保管承诺，方块掌管技艺，梅花让分散的力量组成牌局。',[0]) +
+      galleryGroup(images,'四种花色，四种性格','统一边框与色彩语言，让每个花色仍有独立的叙事。',[1,2,3,4],'suit-showcase') +
+      galleryGroup(images,'角色与等级','从宫廷人物到大小王，体态、眼神、服装和道具一起塑造身份。',[5,6],'character-showcase') +
+      galleryGroup(images,'视觉创作与材质表现','从平面设计走向场景、纸感与金属光泽的概念表达。',[7,8],'material-showcase');
+  }
+  return `<div class="project-gallery project-gallery-${id}" aria-label="项目图片展示">${content}</div>`;
 }
 dialogContent.addEventListener('click', event => {
   const button = event.target.closest('[data-gallery-index]');
@@ -30,7 +62,7 @@ document.querySelectorAll('[data-project]').forEach(button => button.addEventLis
   const project = projects[button.dataset.project];
   previousFocus = button;
   currentGallery = window.projectGalleries[button.dataset.project] || [];
-  dialogContent.innerHTML = `<p class="dialog-category">${project.category}</p><h2 id="dialog-title" class="dialog-title">${project.title}</h2><p class="dialog-lead">${project.lead}</p>${renderGallery(currentGallery)}<section class="dialog-block"><h3>从什么问题开始</h3><p>${project.background}</p></section><section class="dialog-block"><h3>产品与创作思路</h3><ul>${project.approach.map(item => `<li>${item}</li>`).join('')}</ul></section><section class="dialog-block"><h3>已形成的内容</h3><p>${project.outcome}</p></section><section class="dialog-block"><h3>项目关注点</h3><p>${project.focus}</p></section><a class="button primary dialog-contact" href="mailto:647683112@qq.com?subject=${encodeURIComponent('关于 ' + project.title + ' 的合作交流')}">聊聊这个项目 <span>↗</span></a>`;
+  dialogContent.innerHTML = `<p class="dialog-category">${project.category}</p><h2 id="dialog-title" class="dialog-title">${project.title}</h2><p class="dialog-lead">${project.lead}</p><section class="dialog-block"><h3>项目介绍</h3><p>${project.background}</p></section>${renderHighlights(button.dataset.project)}${renderGallery(currentGallery,button.dataset.project)}<section class="dialog-block"><h3>项目进展</h3><p>${project.outcome}</p></section><a class="button primary dialog-contact" href="mailto:647683112@qq.com?subject=${encodeURIComponent('关于 ' + project.title + ' 的合作交流')}">聊聊这个项目 <span>↗</span></a>`;
   dialog.showModal();
   document.body.style.overflow = 'hidden';
   dialog.scrollTop = 0;
