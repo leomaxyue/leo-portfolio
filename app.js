@@ -111,3 +111,46 @@ if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
   });
   hero.addEventListener('pointerleave', () => { cancelAnimationFrame(frame); heroImage.style.transform = ''; });
 }
+
+// Keep navigation in sync with reading position, without intercepting scrolling.
+const pageHeader = document.querySelector('.header');
+const pageSections = Array.from(document.querySelectorAll('main > section[id]'));
+const pageLinks = Array.from(navigation.querySelectorAll('a'));
+let readingFrame;
+function updateReadingPosition() {
+  const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+  pageHeader.style.setProperty('--reading-progress', scrollable > 0 ? Math.min(1, window.scrollY / scrollable) : 0);
+  pageHeader.classList.toggle('is-scrolled', window.scrollY > 32);
+  const active = pageSections.filter(section => section.getBoundingClientRect().top <= window.innerHeight * .35).at(-1) || pageSections[0];
+  pageLinks.forEach(link => {
+    if (link.hash === '#' + active.id) link.setAttribute('aria-current', 'location');
+    else link.removeAttribute('aria-current');
+  });
+}
+window.addEventListener('scroll', () => { cancelAnimationFrame(readingFrame); readingFrame = requestAnimationFrame(updateReadingPosition); }, { passive: true });
+window.addEventListener('resize', updateReadingPosition);
+updateReadingPosition();
+
+// A small spatial response helps desktop covers feel like objects on a desk.
+if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  document.querySelectorAll('.project-button').forEach(button => {
+    const poster = button.querySelector('.poster');
+    let tiltFrame;
+    button.addEventListener('pointermove', event => {
+      if (reducedMotion.matches) return;
+      cancelAnimationFrame(tiltFrame);
+      tiltFrame = requestAnimationFrame(() => {
+        const bounds = button.getBoundingClientRect();
+        poster.style.setProperty('--tilt-x', ((.5 - (event.clientY - bounds.top) / bounds.height) * 3).toFixed(2) + 'deg');
+        poster.style.setProperty('--tilt-y', (((event.clientX - bounds.left) / bounds.width - .5) * 4).toFixed(2) + 'deg');
+      });
+    });
+    button.addEventListener('pointerleave', () => { cancelAnimationFrame(tiltFrame); poster.style.removeProperty('--tilt-x'); poster.style.removeProperty('--tilt-y'); });
+  });
+}
+if (!reducedMotion.matches && 'IntersectionObserver' in window) {
+  const projectObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+    if (entry.isIntersecting) { entry.target.classList.add('is-visible'); projectObserver.unobserve(entry.target); }
+  }), { threshold: .08 });
+  document.querySelectorAll('.project').forEach(project => { project.classList.add('reveal-ready'); projectObserver.observe(project); });
+}
