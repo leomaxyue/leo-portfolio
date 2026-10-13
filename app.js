@@ -88,10 +88,41 @@ menuButton.addEventListener('click', () => {
 });
 navigation.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
 document.addEventListener('keydown', event => { if (event.key === 'Escape') closeMenu(); });
-document.querySelector('#copy-email').addEventListener('click', async () => {
-  const status = document.querySelector('#copy-status');
-  try { await navigator.clipboard.writeText('647683112@qq.com'); status.textContent = '邮箱已复制，期待你的来信。'; }
-  catch { status.textContent = '暂时无法自动复制，请复制上方邮箱，或直接点击发送邮件。'; }
+const contactDialog = document.querySelector('#contact-dialog');
+const contactBody = document.querySelector('#contact-dialog-body');
+const contactStatus = document.querySelector('#copy-status');
+const contactDetails = {
+  email: { title: '邮箱联系', value: '647683112@qq.com', href: 'mailto:647683112@qq.com', action: '发邮件聊聊', copy: '复制邮箱' },
+  phone: { title: '电话联系', value: '14779010514', href: 'tel:14779010514', action: '拨打电话', copy: '复制手机号' }
+};
+let contactTrigger;
+document.querySelectorAll('[data-contact]').forEach(button => button.addEventListener('click', () => {
+  const method = button.dataset.contact;
+  contactTrigger = button;
+  contactStatus.textContent = '';
+  document.querySelector('#contact-dialog-title').textContent = method === 'wechat' ? '微信联系' : contactDetails[method].title;
+  if (method === 'wechat') {
+    contactBody.innerHTML = '<img class="contact-qr" src="assets/wechat-qr.jpg" alt="Leo 的微信二维码" width="853" height="1032"><p>扫一扫，添加微信聊聊。<br>手机浏览可以打开原图后保存，用微信识别。</p><a class="contact-original" href="assets/wechat-qr.jpg" target="_blank" rel="noopener">打开完整二维码 ↗</a>';
+  } else {
+    const details = contactDetails[method];
+    contactBody.innerHTML = `<a class="contact-value" href="${details.href}">${details.value}</a><div class="contact-dialog-actions"><a class="button primary" href="${details.href}">${details.action} ↗</a><button class="button secondary" data-copy-contact="${method}">${details.copy} ＋</button></div>`;
+  }
+  contactDialog.showModal();
+  document.body.style.overflow = 'hidden';
+}));
+document.querySelector('#close-contact').addEventListener('click', () => contactDialog.close());
+contactDialog.addEventListener('click', event => {
+  if (event.target !== contactDialog) return;
+  const bounds = contactDialog.getBoundingClientRect();
+  if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) contactDialog.close();
+});
+contactDialog.addEventListener('close', () => { document.body.style.overflow = ''; contactTrigger?.focus(); });
+contactBody.addEventListener('click', async event => {
+  const button = event.target.closest('[data-copy-contact]');
+  if (!button) return;
+  const details = contactDetails[button.dataset.copyContact];
+  try { await navigator.clipboard.writeText(details.value); contactStatus.textContent = '已复制，期待你的联系。'; }
+  catch { contactStatus.textContent = '请长按或选中上方联系方式进行复制。'; }
 });
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 if (!reducedMotion.matches && 'IntersectionObserver' in window) {
